@@ -81,8 +81,12 @@ WSGI_APPLICATION = 'back.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'caramel_prod',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -137,7 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 
 # Email Configuration
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
@@ -164,7 +168,7 @@ SIMPLE_JWT = {
 
 }
 
-PASSWORD_RESET_TIMEOUT=900          # 900 Sec = 15 Min
+PASSWORD_RESET_TIMEOUT = 900          # 900 Sec = 15 Min
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
