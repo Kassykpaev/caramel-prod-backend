@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +8,7 @@ from django.contrib.auth import authenticate
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from account.models import UserRequest
 
 # Generate Token Manually
 def get_tokens_for_user(user):
@@ -67,3 +69,18 @@ class UserPasswordResetView(APIView):
     serializer = UserPasswordResetSerializer(data=request.data, context={'uid':uid, 'token':token})
     serializer.is_valid(raise_exception=True)
     return Response({'msg':'Password Reset Successfully'}, status=status.HTTP_200_OK)
+
+class UserRequestView(APIView):
+  renderer_classes = [UserRenderer]
+  def post(self, request, format=None):
+    name = request.data['name']
+    phone = request.data['phone_number']
+    text = request.data['text']
+    
+    user_request = UserRequest(
+      name=name, 
+      phone=phone,
+      text=text)
+
+    user_request.save()
+    return Response(status=status.HTTP_200_OK)

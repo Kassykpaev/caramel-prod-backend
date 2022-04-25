@@ -2,7 +2,7 @@ from django.contrib import admin
 from account.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import User, UserRequest
 
 class UserModelAdmin(BaseUserAdmin):
   # The fields to be used in displaying the User model.
@@ -33,3 +33,4 @@ class UserModelAdmin(BaseUserAdmin):
   is_company_staff.boolean = True
 
 admin.site.register(User, UserModelAdmin)
+admin.site.register(UserRequest)

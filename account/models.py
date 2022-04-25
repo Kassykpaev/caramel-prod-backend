@@ -1,5 +1,8 @@
+from dataclasses import field
+from lib2to3.pytree import Base
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
 
 #  Custom User Manager
 
@@ -77,3 +80,11 @@ class User(AbstractBaseUser):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+class UserRequest(models.Model):
+    name = models.CharField(max_length=100)
+    text = models.CharField(max_length=255)
+    phone = models.CharField(max_length=255) 
+
+    def __str__(self) -> str:
+        return self.name + ' ' + self.phone 
