@@ -4,6 +4,12 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from account.utils import Util
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
+from django.contrib.auth import get_user_model
+
+
+class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
+    username_field = User.USERNAME_FIELD
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
