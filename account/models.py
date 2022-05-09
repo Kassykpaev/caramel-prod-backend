@@ -42,6 +42,11 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
     email = models.EmailField(
         verbose_name='Email',
         max_length=255,
@@ -80,8 +85,12 @@ class User(AbstractBaseUser):
 
 
 class UserRequest(models.Model):
+    class Meta:
+        verbose_name = 'Заявка на сотрудничество'
+        verbose_name_plural = 'Заявки на сотрудничество'
+
     name = models.CharField(max_length=100)
-    text = models.CharField(max_length=255)
+    text = models.CharField(max_length=1000)
     phone = models.CharField(max_length=255)
 
     def __str__(self) -> str:
