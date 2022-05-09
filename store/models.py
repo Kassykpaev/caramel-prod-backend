@@ -1,6 +1,26 @@
 from tabnanny import verbose
 from django.db import models
+from django.forms import ValidationError
 from account.models import User
+
+
+class Config(models.Model):
+    class Meta:
+        verbose_name = "Конфигурация"
+        verbose_name_plural = "Конфигурация"
+
+    price_per_unit = models.FloatField(
+        verbose_name='Стоимость литра сиропа (тг)', default=5000, null=False)
+
+    def __str__(self):
+        return 'Конфигурация'
+
+    def save(self, *args, **kwargs):
+        if not self.pk and Config.objects.exists():
+            # if you'll not check for self.pk
+            # then error will also raised in update of exists model
+            raise ValidationError('There is can be only one Config instance')
+        return super(Config, self).save(*args, **kwargs)
 
 
 class Address(models.Model):
