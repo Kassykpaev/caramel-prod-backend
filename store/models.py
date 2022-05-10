@@ -62,12 +62,12 @@ class Order(models.Model):
     payment_received = models.BooleanField(
         verbose_name='Оплачен', default=False)
 
-    CREATED = 'Created'
-    IN_PROGRESS = 'Progress'
-    READY_FOR_SHIPPING = 'Ready for shipping'
-    SHIPPING = 'Shipping'
-    DONE = 'Done'
-    DECLINED = 'Declined'
+    CREATED = 'CREATED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    READY_FOR_SHIPPING = 'READY_FOR_SHIPPING'
+    SHIPPING = 'SHIPPING'
+    DONE = 'DONE'
+    DECLINED = 'DECLINED'
 
     STATUS_CHOICES = (
         (CREATED, 'Создан'),
