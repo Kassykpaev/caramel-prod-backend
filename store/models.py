@@ -59,7 +59,7 @@ class Order(models.Model):
         verbose_name='Стоимость одного литра', default=5000, null=False)
     volume = models.FloatField(
         verbose_name='Объем', default=0, null=False)
-    payment_recieved = models.BooleanField(
+    payment_received = models.BooleanField(
         verbose_name='Оплачен', default=False)
 
     CREATED = 'Created'
