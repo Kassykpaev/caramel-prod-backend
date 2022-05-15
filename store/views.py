@@ -1,8 +1,8 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Order
-from .serializers import OrderListSerializer, OrderCreateSerializer
+from .models import Order, Address
+from .serializers import OrderListSerializer, OrderCreateSerializer, AddressSerializer
 
 # Create your views here.
 
@@ -20,4 +20,20 @@ class OrderCreateView(generics.CreateAPIView):
     serializer_class = OrderCreateSerializer
 
     def get_queryset(self):
-        return Order.objects.get_queryset()
+        return Order.objects.all()
+
+
+class AddressCreateListView(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+
+class AddressRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
