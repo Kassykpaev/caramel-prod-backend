@@ -24,6 +24,7 @@ class Boiler(models.Model):
     STATE_CHOICES = (
         ("VACANT", "Готова к работе"),
         ("IN_PROGRESS", "В процессе выполнения заказа"),
+        ("DONE", "Закончена работа над заказом"),
         ("ALARM", "Перегрев двигателя")
     )
 

@@ -1,4 +1,3 @@
-from tabnanny import verbose
 from django.db import models
 from django.forms import ValidationError
 from account.models import User
@@ -63,6 +62,7 @@ class Order(models.Model):
         verbose_name='Оплачен', default=False)
 
     CREATED = 'CREATED'
+    IN_QUEUE = 'IN_QUEUE'
     IN_PROGRESS = 'IN_PROGRESS'
     READY_FOR_SHIPPING = 'READY_FOR_SHIPPING'
     SHIPPING = 'SHIPPING'
@@ -76,6 +76,7 @@ class Order(models.Model):
         (SHIPPING, 'Доставляется'),
         (DONE, 'Завершен'),
         (DECLINED, 'Отклонен'),
+        (IN_QUEUE, 'В очереди на выполнение')
     )
     status = models.CharField(verbose_name='Статус',
                               max_length=255, choices=STATUS_CHOICES, default=CREATED)
