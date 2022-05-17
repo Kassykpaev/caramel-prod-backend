@@ -1,5 +1,5 @@
 import datetime
-
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
@@ -19,6 +19,13 @@ class BoilersListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Boiler.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        # change is here  >> sorted with reverse order of 'id'
+        queryset = self.get_queryset().order_by('id')
+
+        serializer = self.get_serializer(queryset, many=True)
+        return JsonResponse(serializer.data, safe=False)
 
 
 class BoilerUpdateModeView(generics.UpdateAPIView):
@@ -57,7 +64,27 @@ class BoilerUpdateIfManual(generics.UpdateAPIView):
         if boiler.mode == "MANUAL" and engine_voltage > 0 and boiler.status == "IN_PROGRESS":
             serializer.save()
         else:
-            raise PermissionDenied(detail='boiler not in working mode or sent not valid prams', code=403)
+            raise PermissionDenied(
+                detail='boiler not in working mode or sent not valid prams', code=403)
+
+
+class BoilerUpdateIfAuto(generics.UpdateAPIView):
+    permissions_classes = [permissions.IsAuthenticated]
+    serializer_class = BoilerUpdateOrderProgress
+
+    def get_queryset(self):
+        return Boiler.objects.all()
+
+    def perform_update(self, serializer):
+        pk = self.kwargs.get('pk')
+        boiler = self.get_queryset().get(pk=pk)
+        engine_target_voltage = serializer.validated_data.get(
+            'engine_target_voltage')
+        if boiler.mode == "AUTO" and engine_target_voltage > 0 and boiler.status == "IN_PROGRESS":
+            serializer.save()
+        else:
+            raise PermissionDenied(
+                detail='boiler not in working mode or sent not valid prams', code=403)
 
 
 class BoilerRetrieveView(generics.RetrieveAPIView):

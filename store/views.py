@@ -1,10 +1,19 @@
+from django.http import JsonResponse
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 from .models import Order, Address, Config
-from .serializers import OrderListSerializer, OrderCreateSerializer, AddressSerializer, OrderUpdateSerializer
+from .serializers import ConfigSerializer, OrderListSerializer, OrderCreateSerializer, AddressSerializer, OrderUpdateSerializer
 
 # Create your views here.
+
+
+class OrderListAllView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderListSerializer
+
+    def get_queryset(self):
+        return Order.objects.all()
 
 
 class OrderListView(generics.ListAPIView):
@@ -13,6 +22,22 @@ class OrderListView(generics.ListAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+
+class OrderView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderListSerializer
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+
+def get_config_view(request):
+
+    if request.method == 'GET':
+        config = Config.objects.first()
+        data = ConfigSerializer(instance=config)
+        return JsonResponse(data.data)
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -27,7 +52,9 @@ class OrderCreateView(generics.CreateAPIView):
         address = serializer.validated_data.get('address')
         user = self.request.user
         price_per_unit = Config.objects.first().price_per_unit
-        serializer.save(volume=volume, address=address, user=user, price_per_unit=price_per_unit)
+        total_price = price_per_unit * volume
+        serializer.save(volume=volume, address=address,
+                        user=user, price_per_unit=price_per_unit, total_price=total_price)
 
 
 class OrderRetrieveView(generics.RetrieveAPIView):
@@ -52,6 +79,10 @@ class AddressCreateListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
 
 
 class AddressRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):

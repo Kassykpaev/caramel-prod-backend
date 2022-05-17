@@ -5,5 +5,5 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(update_models, 'interval', miliseconds=MAKING_TIME)
+    scheduler.add_job(update_models, 'interval', seconds=0.2)
     scheduler.start()
