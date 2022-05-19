@@ -25,7 +25,7 @@ class Boiler(models.Model):
     engine_target_voltage = models.FloatField(
         verbose_name='SP', null=True,  blank=True)
     error_prev = models.FloatField(
-        verbose_name='Предыдущая ошибка', null=True,  blank=True)
+        verbose_name='Предыдущая ошибка', default=0.0)
     coef_i = models.FloatField(verbose_name='Коэфициент I', default=0.0)
     coef_mv_bar = models.FloatField(verbose_name='Коэфициент MV', default=0.0)
 
@@ -47,4 +47,5 @@ class Boiler(models.Model):
         verbose_name='Режим', max_length=255, choices=MODE_CHOICES, default="MANUAL")
 
     def __str__(self):
-        return 'Котел номер %d, режим %s, статус %s' % (self.id, self.mode, self.status)
+        return 'Котел номер {id}, режим {mode}, статус {status}, температура {temperature}'\
+            .format(id=self.id, mode=self.mode, status=self.status, temperature=self.engine_temperature)

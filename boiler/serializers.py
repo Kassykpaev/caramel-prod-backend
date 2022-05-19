@@ -44,3 +44,12 @@ class BoilerRetrieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Boiler
         fields = '__all__'
+
+
+class BoilerUpdateStatus(serializers.ModelSerializer):
+    class Meta:
+        model = Boiler
+        fields = [
+            'id',
+            'status'
+        ]

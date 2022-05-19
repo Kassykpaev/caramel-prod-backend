@@ -91,3 +91,11 @@ class AddressRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Address.objects.filter(user=self.request.user)
+
+
+class OrdersListViewWithStatus(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderListSerializer
+
+    def get_queryset(self):
+        Order.objects.filter(status="IN_QUEUE")

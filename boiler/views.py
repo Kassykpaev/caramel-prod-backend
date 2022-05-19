@@ -5,7 +5,7 @@ from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 
 from .serializers import BoilerSerializer, BoilerModeUpdateSerializer, BoilerAddOrderSerializer, \
-    BoilerUpdateOrderProgress, BoilerRetrieveSerializer
+    BoilerUpdateOrderProgress, BoilerRetrieveSerializer, BoilerUpdateStatus
 from .models import Boiler
 from .constants import MAKING_TIME
 
@@ -46,7 +46,8 @@ class BoilerAddOrderView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         time_ending = datetime.datetime.now() + datetime.timedelta(milliseconds=MAKING_TIME)
         status = "IN_PROGRESS"
-        serializer.save(ending_time_of_iteration=time_ending, status=status)
+        serializer.save(ending_time_of_iteration=time_ending, status=status, error_prev=0.0, made_volume=0.0,
+                        order__status="IN_PROGRESS")
 
 
 class BoilerUpdateIfManual(generics.UpdateAPIView):
@@ -85,6 +86,28 @@ class BoilerUpdateIfAuto(generics.UpdateAPIView):
         else:
             raise PermissionDenied(
                 detail='boiler not in working mode or sent not valid prams', code=403)
+
+
+class BoilerUpdateStatusView(generics.UpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = BoilerUpdateStatus
+
+    def get_queryset(self):
+        return Boiler.objects.all()
+
+    def perform_update(self, serializer):
+        pk = self.kwargs.get("pk")
+        boiler = self.get_queryset().get(pk=pk)
+        status = serializer.validated_data.get('status')
+        print(status)
+        if status == "VACANT":
+            order = boiler.order
+            if order is not None and order.made_volume >= order.volume:
+                order.status = "DONE"
+                order.save()
+            serializer.save(order=None)
+        else:
+            serializer.save()
 
 
 class BoilerRetrieveView(generics.RetrieveAPIView):

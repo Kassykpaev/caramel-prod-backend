@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import OrderListAllView, OrderListView, OrderCreateView, AddressCreateListView, AddressRetrieveUpdateDeleteView, OrderView, get_config_view
+from .views import OrderListAllView, OrderListView, OrderCreateView, AddressCreateListView, \
+    AddressRetrieveUpdateDeleteView, OrderView, get_config_view, OrdersListViewWithStatus
 
 urlpatterns = [
     path('config/', get_config_view),
@@ -8,5 +9,6 @@ urlpatterns = [
     path('orders/<int:pk>/', OrderView.as_view()),
     path('orders/create/', OrderCreateView.as_view()),
     path('addresses/', AddressCreateListView.as_view()),
-    path('addresses/<int:pk>/', AddressRetrieveUpdateDeleteView.as_view())
+    path('addresses/<int:pk>/', AddressRetrieveUpdateDeleteView.as_view()),
+    path('stuff/orders/', OrdersListViewWithStatus.as_view())
 ]
